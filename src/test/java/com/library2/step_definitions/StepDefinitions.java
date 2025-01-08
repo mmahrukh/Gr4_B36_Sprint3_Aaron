@@ -61,12 +61,13 @@ public class StepDefinitions {
     public void path_param_is(String paramName, String paramValue) {
 
         givenPart.pathParam(paramName,paramValue);
-        pathParam = paramValue;
+        this.pathParam = paramValue;
     }
 
     @Then("{string} field should be same with path param")
     public void field_should_be_same_with_path_param(String idField) {
 
+        jp = response.jsonPath();
         String results = jp.getString(idField);
         assertEquals(pathParam,results);
     }
