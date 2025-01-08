@@ -1,8 +1,8 @@
 package com.library2.step_definitions;
 
-import com.library2.utlities.ConfigurationReader;
-import com.library2.utlities.DB_Utils;
-import com.library2.utlities.Driver;
+import com.library2.utilities.ConfigurationReader;
+import com.library2.utilities.DB_Utils;
+import com.library2.utilities.Driver;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;

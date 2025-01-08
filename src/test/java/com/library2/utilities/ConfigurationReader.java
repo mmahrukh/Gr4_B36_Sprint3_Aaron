@@ -1,4 +1,4 @@
-package com.library2.utlities;
+package com.library2.utilities;
 
 import java.io.FileInputStream;
 import java.io.IOException;

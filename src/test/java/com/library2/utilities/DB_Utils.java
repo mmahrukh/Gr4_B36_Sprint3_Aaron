@@ -1,4 +1,4 @@
-package com.library2.utlities;
+package com.library2.utilities;
 
 import java.sql.*;
 import java.util.ArrayList;

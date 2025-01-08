@@ -1,4 +1,4 @@
-package com.library2.utlities;
+package com.library2.utilities;
 
 import org.junit.Assert;
 import org.openqa.selenium.*;
