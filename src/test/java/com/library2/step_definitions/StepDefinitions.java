@@ -37,6 +37,7 @@ public class StepDefinitions {
     @When("I send GET request to {string} endpoint")
     public void iSendGETRequestToEndpoint(String endpoint) {
         response = givenPart.when().get(endpoint);
+        jp = response.jsonPath();
         thenPart = response.then();
         // response.prettyPrint();
     }
