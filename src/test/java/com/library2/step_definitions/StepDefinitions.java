@@ -11,12 +11,18 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class StepDefinitions {
     RequestSpecification givenPart = RestAssured.given().log().all();
     Response response;
     JsonPath jp;
     ValidatableResponse thenPart;
+    String pathParam;
 
     @Given("I logged Library api as a {string}")
     public void iLoggedLibraryApiAsA(String role) {
@@ -48,5 +54,29 @@ public class StepDefinitions {
     @And("{string} field should not be null")
     public void fieldShouldNotBeNull(String path) {
         thenPart.body(path, Matchers.notNullValue());
+    }
+
+
+    @Given("Path Param {string} is {string}")
+    public void path_param_is(String paramName, String paramValue) {
+
+        givenPart.pathParam(paramName,paramValue);
+        pathParam = paramValue;
+    }
+
+    @Then("{string} field should be same with path param")
+    public void field_should_be_same_with_path_param(String idField) {
+
+        String results = jp.getString(idField);
+        assertEquals(pathParam,results);
+    }
+
+    @Then("following fields should not be null")
+    public void following_fields_should_not_be_null(List<String> path) {
+
+        for(String eachPath : path){
+            Assert.assertNotNull(jp.getString(eachPath));
+        }
+
     }
 }
