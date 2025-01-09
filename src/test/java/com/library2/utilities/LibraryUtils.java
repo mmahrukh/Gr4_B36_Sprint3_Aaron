@@ -1,5 +1,6 @@
 package com.library2.utilities;
 
+import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -64,4 +65,29 @@ public class LibraryUtils {
 
     }
 
+    public static Map<String, Object> createRandomBook() {
+        Faker faker = new Faker();
+        Map<String, Object> book = new HashMap();
+        book.put("name", "SN_test " + faker.book().title());
+        book.put("isbn", faker.code().isbn13());
+        book.put("year", faker.number().numberBetween(2000, 2024));
+        book.put("author", "SN_test " + faker.book().author());
+        book.put("book_category_id", faker.number().numberBetween(1, 20));
+        book.put("description", faker.lorem().sentence(10));
+        return book;
+    }
+
+    public static Map<String, Object> createRandomUser() {
+        Faker faker = new Faker();
+        Map<String, Object> randomUser = new HashMap();
+        randomUser.put("full_name", "SN_test " + faker.name().fullName());
+        randomUser.put("email", faker.internet().emailAddress());
+        randomUser.put("password", faker.internet().password());
+        randomUser.put("user_group_id", faker.number().numberBetween(1, 3));
+        randomUser.put("status", "ACTIVE");
+        randomUser.put("start_date", "2000-01-01");
+        randomUser.put("end_date", "2025-04-02");
+        randomUser.put("address", "SN_test " + faker.address().fullAddress());
+        return randomUser;
+    }
 }

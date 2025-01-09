@@ -1,10 +1,9 @@
 package com.library2.utilities;
 
+import org.junit.Assert;
+
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DB_Utils {
 
@@ -409,5 +408,19 @@ public class DB_Utils {
 
     }
 
+    public static void assertMapDB(Map<String, String> mapDB, Map<String, Object> map) {
+        for (Map.Entry<String, String> entryDB : mapDB.entrySet()) {
+            if (entryDB.getKey().equals("password")
+                    || entryDB.getKey().equals("id")
+                    || entryDB.getKey().equals("added_date")) {
+                continue;
+            }
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                if (entryDB.getKey().equals(entry.getKey())) {
+                    Assert.assertEquals(entry.getValue().toString(), entry.getValue().toString());
+                }
+            }
+        }
 
+}
 }
