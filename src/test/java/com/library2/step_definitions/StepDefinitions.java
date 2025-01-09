@@ -1,5 +1,10 @@
 package com.library2.step_definitions;
 
+import com.library2.pages.BasePage;
+import com.library2.pages.BooksPage;
+import com.library2.pages.LoginPage;
+import com.library2.utilities.BrowserUtils;
+import com.library2.utilities.DB_Utils;
 import com.library2.utilities.LibraryUtils;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -12,9 +17,15 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.openqa.selenium.Keys;
 
+import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 
+import static com.library2.utilities.LibraryUtils.createRandomBook;
+import static com.library2.utilities.LibraryUtils.createRandomUser;
 import static org.junit.Assert.assertEquals;
 
 public class StepDefinitions {
@@ -23,6 +34,10 @@ public class StepDefinitions {
     JsonPath jp;
     ValidatableResponse thenPart;
     String pathParam;
+
+    LoginPage loginPage = new LoginPage();
+    BasePage base = new BooksPage();
+    BooksPage book = new BooksPage();
 
     @Given("I logged Library api as a {string}")
     public void iLoggedLibraryApiAsA(String role) {
@@ -80,4 +95,83 @@ public class StepDefinitions {
         }
 
     }
+
+
+    //-----------US_03_01-----------
+    @And("Request Content Type header is {string}")
+    public void requestContentTypeHeaderIs(String contentType) {
+        givenPart.contentType(contentType);
+    }
+
+    Map<String, Object> randomMap = new HashMap<>();
+    @And("I create a random {string} as request body")
+    public void iCreateARandomAsRequestBody(String input) {
+        switch (input){
+            case "book"->{
+                randomMap = createRandomBook();
+            }
+            case "user"->{
+                randomMap = createRandomUser();
+            }
+            case "null"->{
+                throw new InputMismatchException();
+            }
+        }
+        for(Map.Entry<String, Object> entry : randomMap.entrySet()){
+            givenPart.formParam(entry.getKey(), entry.getValue());
+        }
+    }
+
+
+    @When("I send POST request to {string} endpoint")
+    public void iSendPOSTRequestToEndpoint(String endPoint) {
+        response = givenPart.when().post(endPoint);
+        jp = response.jsonPath();
+        thenPart = response.then();
+        response.prettyPrint();
+    }
+
+    @And("the field value for {string} path should be equal to {string}")
+    public void theFieldValueForPathShouldBeEqualTo(String path, String value) {
+        thenPart.body(path,Matchers.is(value));
+    }
+
+    //-----------US_03_02-----------
+    @Given("I logged in Library UI as {string}")
+    public void i_logged_in_library_ui_as(String userType) {
+        loginPage.login(userType);
+    }
+    @Given("I navigate to {string} page")
+    public void i_navigate_to_page(String string) {
+        base.booksPageButton.click();
+    }
+    @Then("UI, Database and API created book information must match")
+    public void ui_database_and_api_created_book_information_must_match() {
+
+        book.searchBox.sendKeys(randomMap.get("name").toString() + Keys.ENTER);
+        BrowserUtils.waitFor(1);
+
+
+        DB_Utils.runQuery("select * from books where id=" + jp.getString("id"));
+        Map<String,String> dataMap = DB_Utils.getRowMap(1);
+
+
+        DB_Utils.assertMapDB(dataMap,randomMap);
+        Assert.assertEquals(randomMap.get("name").toString(),book.result_name.getText());
+        Assert.assertEquals(randomMap.get("author").toString(),book.result_author.getText());
+        Assert.assertEquals(randomMap.get("year").toString(),book.result_year.getText());
+        Assert.assertEquals(randomMap.get("isbn").toString(),book.result_isbn.getText());
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

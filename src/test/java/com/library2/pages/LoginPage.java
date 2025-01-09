@@ -31,5 +31,13 @@ public class LoginPage {
         signInButton.click();
     }
 
+    public void login(String role){
+        switch(role){
+            case "librarian"-> login(ConfigurationReader.getProperty("librarian_username"), ConfigurationReader.getProperty("librarian_password"));
+            case "student" -> login(ConfigurationReader.getProperty("student_username"), ConfigurationReader.getProperty("student_password"));
+            default -> throw new IllegalStateException("Unexpected value: " + role);
+        }
+    }
+
 
 }
