@@ -24,8 +24,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 
-import static com.library2.utilities.LibraryUtils.createRandomBook;
-import static com.library2.utilities.LibraryUtils.createRandomUser;
+import static com.library2.utilities.LibraryUtils.*;
 import static org.junit.Assert.assertEquals;
 
 public class StepDefinitions {
@@ -111,7 +110,8 @@ public class StepDefinitions {
                 randomMap = createRandomBook();
             }
             case "user"->{
-                randomMap = createRandomUser();
+                //randomMap = createRandomUser(); //serge's custom user map
+                randomMap = getRandomUserMap(); //mahrukh's custom user map
             }
             case "null"->{
                 throw new InputMismatchException();
@@ -164,6 +164,37 @@ public class StepDefinitions {
         Assert.assertEquals(randomMap.get("isbn").toString(),book.result_isbn.getText());
     }
 
+    //-- US04 --
+    Map<String,String> dataMapDb;
+    @Then("created user information should match with Database")
+    public void created_user_information_should_match_with_database() {
+
+        //1. Extract user_id from the API response
+        String id = jp.getString("user_id");
+        System.out.println("userId = " + id);
+
+        //2. Database - run Query & store as DB Data
+        DB_Utils.runQuery("select * from books where id=" + id);
+        dataMapDb = DB_Utils.getRowMap(1);
+
+        //3. Compare API with DB
+        DB_Utils.assertMapDB(dataMapDb, randomMap);
+    }
+
+    @Then("created user should be able to login Library UI")
+    public void created_user_should_be_able_to_login_library_ui() {
+        String createdEmail = (String) randomMap.get("email");         //down-casting
+        String createdPassword = (String) randomMap.get("password");  //down-casting
+
+        loginPage.login(createdEmail, createdPassword);
+    }
+
+    @Then("created user name should appear in Dashboard Page")
+    public void created_user_name_should_appear_in_dashboard_page() {
+        BrowserUtils.waitForVisibility(book.userName, 3);
+        String createdUsername = randomMap.get("full_name").toString();
+        assertEquals(book.userName.getText(), createdUsername);
+    }
 
 
 }
