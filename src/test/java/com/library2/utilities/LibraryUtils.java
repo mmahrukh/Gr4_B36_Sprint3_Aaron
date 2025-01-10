@@ -6,6 +6,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class LibraryUtils {
@@ -90,4 +91,30 @@ public class LibraryUtils {
         randomUser.put("address", "SN_test " + faker.address().fullAddress());
         return randomUser;
     }
+
+     //-- Mahrukh's user data map
+    public static Map<String, Object> getRandomUserMap() {
+
+        Faker faker = new Faker();
+        Map<String, Object> userMap = new LinkedHashMap<>();
+
+        // fake user data
+        String fullName = "Mahh" + faker.name().fullName();
+        String email = fullName.substring(0, fullName.indexOf(" ")) + faker.number().numberBetween(0,10) + "@library";
+        System.out.println("email = " + email);
+
+        userMap.put("full_name", fullName);
+        userMap.put("email", email);
+        userMap.put("password", "libraryUser");
+
+        //2 is librarian as role
+        userMap.put("user_group_id", "2");
+        userMap.put("status", "ACTIVE");
+        userMap.put("start_date", "2023-03-11");
+        userMap.put("end_date", "2024-03-11");
+        userMap.put("address", faker.address().cityName());
+
+        return userMap;
+    }
+
 }
