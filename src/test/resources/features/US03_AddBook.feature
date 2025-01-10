@@ -1,5 +1,7 @@
+@us3
 Feature: As a librarian, I want to create a new book using add_book endpoint so that I can add new books to the system.
 
+  @us3 @scenario1
   Scenario: Create a new book API
     Given I logged Library api as a "librarian"
     And Accept header is "application/json"
@@ -11,7 +13,7 @@ Feature: As a librarian, I want to create a new book using add_book endpoint so 
     And the field value for "message" path should be equal to "The book has been created."
     And "book_id" field should not be null
 
-  @ui @db
+  @us3 @scenario2 @ui @db
   Scenario: Create a new book ALL LAYERS
     Given I logged Library api as a "librarian"
     And Accept header is "application/json"

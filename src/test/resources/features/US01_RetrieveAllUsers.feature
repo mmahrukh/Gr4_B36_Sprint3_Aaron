@@ -1,7 +1,7 @@
+@us1 @api
 Feature: As a librarian, I want to retrieve all users from get_all_users endpoint so that I can display them in my
   application.
 
-  @wip
   Scenario: Retrieve all users from the API endpoint
     Given I logged Library api as a "librarian"
     And Accept header is "application/json"
