@@ -38,18 +38,28 @@ public class DB_Utils {
      * Create connection method , just checking one connection successful or not
      */
     public static void createConnection() {
-
+        // Read database URL from configuration.properties
         String url = ConfigurationReader.getProperty("dbUrl");
 
-        // String username = ConfigurationReader.getProperty("dbUsername") ;
+        // Check environment variables for username and password
         String username = System.getenv("DB_USERNAME");
-
-        // String password = ConfigurationReader.getProperty("dbPassword") ;
         String password = System.getenv("DB_PASSWORD");
 
-        createConnection(url, username, password);
+        // Fallback to configuration.properties if environment variables are null
+        if (username == null || username.isEmpty()) {
+            System.out.println("Environment variable DB_USERNAME not found, reading from configuration.properties...");
+            username = ConfigurationReader.getProperty("library2.db.username");
+        }
 
+        if (password == null || password.isEmpty()) {
+            System.out.println("Environment variable DB_PASSWORD not found, reading from configuration.properties...");
+            password = ConfigurationReader.getProperty("library2.db.password");
+        }
+
+        // Create database connection
+        createConnection(url, username, password);
     }
+
 
 
     /**
